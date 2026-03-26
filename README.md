@@ -48,99 +48,14 @@ Está basado en el microcontrolador **RP2350** de la Fundación Raspberry Pi, co
 ---
 
 ## 🗺️ Diagrama de Conectividad y Puertos
-
-```
-                    ┌─────────────────────────────────────────────────────┐
-                    │                  ARDUINO UNO Q                      │
-                    │                                                     │
-  ┌─ ALIMENTACIÓN ──┤ IOREF  RST  3V3  5V  GND  GND  VIN               │
-  │                 │  [■]   [■]  [■]  [■]  [■]  [■]  [■]               │
-  │                 │                                                     │
-  │ ┌─ ANALÓGICO ───┤  A0    A1   A2   A3   A4   A5                      │
-  │ │               │  [■]   [■]  [■]  [■]  [■]  [■]                     │
-  │ │               │        (también SDA) (también SCL)                 │
-  │ │               │                                                     │
-  │ │               │   ╔═══════════════════════════╗                    │
-  │ │               │   ║   MATRIZ LED 12 × 8       ║                    │
-  │ │               │   ║  ● ● ● ● ● ● ● ● ● ● ● ● ║                    │
-  │ │               │   ║  ● ● ● ● ● ● ● ● ● ● ● ● ║                    │
-  │ │               │   ║  ● ● ● ● ● ● ● ● ● ● ● ● ║                    │
-  │ │               │   ║  ● ● ● ● ● ● ● ● ● ● ● ● ║                    │
-  │ │               │   ║  ● ● ● ● ● ● ● ● ● ● ● ● ║                    │
-  │ │               │   ║  ● ● ● ● ● ● ● ● ● ● ● ● ║                    │
-  │ │               │   ║  ● ● ● ● ● ● ● ● ● ● ● ● ║                    │
-  │ │               │   ║  ● ● ● ● ● ● ● ● ● ● ● ● ║                    │
-  │ │               │   ╚═══════════════════════════╝                    │
-  │ │               │                                                     │
-  │ │               │  [DC JACK 2.1mm]         [USB-C]  [RESET]          │
-  │ │               │                                                     │
-  │ └─ DIGITAL ─────┤  D0/RX  D1/TX  D2  D3~  D4  D5~  D6~  D7          │
-  │                 │   [■]    [■]   [■]  [■]  [■]  [■]  [■]  [■]        │
-  └─────────────────┤  D8   D9~  D10~  D11~/MOSI  D12/MISO  D13/SCK     │
-                    │  [■]  [■]   [■]     [■]        [■]       [■]       │
-                    │                              LED (D13) ──┘          │
-                    │  [ICSP: MISO MOSI SCK RST VCC GND]                  │
-                    └─────────────────────────────────────────────────────┘
-
-  ~ = Pin con PWM (modulación de ancho de pulso)
-```
+<img src="docs/img/uno-q-pinouts.png" align="center"/>
 
 ### Mapa de Pines Detallado
+<img src="docs/img/Front-UNOQ-full-pinout.jpg" align="center"/>
 
-#### Pines Digitales
 
-| Pin  | Etiqueta       | Función Principal | Funciones Alternativas         |
-|------|----------------|-------------------|--------------------------------|
-| D0   | RX             | Digital I/O       | UART Recepción                 |
-| D1   | TX             | Digital I/O       | UART Transmisión               |
-| D2   | D2             | Digital I/O       | Interrupción externa (INT0)    |
-| D3   | ~D3            | Digital I/O + PWM | Interrupción externa (INT1)    |
-| D4   | D4             | Digital I/O       | —                              |
-| D5   | ~D5            | Digital I/O + PWM | —                              |
-| D6   | ~D6            | Digital I/O + PWM | —                              |
-| D7   | D7             | Digital I/O       | —                              |
-| D8   | D8             | Digital I/O       | —                              |
-| D9   | ~D9            | Digital I/O + PWM | —                              |
-| D10  | ~D10/SS        | Digital I/O + PWM | SPI Slave Select               |
-| D11  | ~D11/MOSI      | Digital I/O + PWM | SPI Master Out / Slave In      |
-| D12  | D12/MISO       | Digital I/O       | SPI Master In / Slave Out      |
-| D13  | D13/SCK/LED    | Digital I/O       | SPI Clock / LED integrado      |
 
-#### Pines Analógicos
-
-| Pin  | Función alternativa | Descripción                         |
-|------|---------------------|-------------------------------------|
-| A0   | GPIO                | Entrada analógica 0 (0–3.3V)        |
-| A1   | GPIO                | Entrada analógica 1 (0–3.3V)        |
-| A2   | GPIO                | Entrada analógica 2 (0–3.3V)        |
-| A3   | GPIO                | Entrada analógica 3 (0–3.3V)        |
-| A4   | SDA (I²C)           | Datos I²C / Entrada analógica 4     |
-| A5   | SCL (I²C)           | Reloj I²C / Entrada analógica 5     |
-
-#### Pines de Alimentación
-
-| Pin    | Voltaje | Descripción                                      |
-|--------|---------|--------------------------------------------------|
-| VIN    | 7–12 V  | Alimentación externa (Jack DC o este pin)        |
-| 5V     | 5 V     | Salida regulada 5V (máx. 500 mA desde USB)       |
-| 3V3    | 3.3 V   | Salida regulada 3.3V (máx. 300 mA)               |
-| GND    | 0 V     | Tierra / Masa (hay 2 pines GND en la fila)       |
-| IOREF  | —       | Referencia de tensión de los pines I/O           |
-| RST    | —       | Reinicio del microcontrolador (activo en LOW)    |
-
-#### Interfaz ICSP (In-Circuit Serial Programming)
-
-```
-   MISO ─── [●] [●] ─── VCC
-   SCK  ─── [●] [●] ─── MOSI
-   RST  ─── [●] [●] ─── GND
-```
-
----
-
----
-
-# 📖 Manual: Weather Forecast en Matriz LED
+# 📖 Manual ejemplo: Weather Forecast en Matriz LED
 
 ## Introducción
 
